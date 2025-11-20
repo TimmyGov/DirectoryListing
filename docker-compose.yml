@@ -1,1 +1,99 @@
-version: '3.8'\n\nservices:\n  directory-api:\n    build:\n      context: .\n      dockerfile: Dockerfile\n    container_name: directory-listing-api\n    restart: unless-stopped\n    ports:\n      - \"3000:3000\"\n    environment:\n      - NODE_ENV=production\n      - PORT=3000\n      - LOG_LEVEL=info\n    volumes:\n      # Mount host filesystem for directory listing\n      # SECURITY WARNING: This gives the container access to the host filesystem\n      # Only use in trusted environments and consider restricting access\n      - /:/host:ro  # Linux/macOS - mount root as read-only\n      # For Windows, uncomment the line below and comment the line above:\n      # - C:\\:/host:ro\n      \n      # Mount logs directory for persistent logging\n      - ./logs:/app/logs\n    networks:\n      - directory-api-network\n    healthcheck:\n      test: [\"CMD\", \"node\", \"-e\", \"require('http').get('http://localhost:3000/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) }).on('error', () => process.exit(1))\"]\n      interval: 30s\n      timeout: 10s\n      retries: 3\n      start_period: 40s\n\n  # Optional: Add a reverse proxy for production\n  nginx:\n    image: nginx:alpine\n    container_name: directory-api-nginx\n    restart: unless-stopped\n    ports:\n      - \"80:80\"\n      - \"443:443\"\n    volumes:\n      - ./nginx.conf:/etc/nginx/nginx.conf:ro\n      # Add SSL certificates if needed\n      # - ./ssl:/etc/nginx/ssl:ro\n    depends_on:\n      - directory-api\n    networks:\n      - directory-api-network\n    profiles:\n      - production  # Only start with --profile production\n\nnetworks:\n  directory-api-network:\n    driver: bridge\n\nvolumes:\n  logs:\n    driver: local
+version: '3.8'
+
+services:
+  # API Backend Service
+  directory-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: directory-listing-api
+    restart: unless-stopped
+    expose:
+      - "3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - LOG_LEVEL=info
+    volumes:
+      # Mount host filesystem for directory listing
+      # SECURITY WARNING: This gives the container access to the host filesystem
+      # Only use in trusted environments and consider restricting access
+      - /:/host:ro  # Linux/macOS - mount root as read-only
+      # For Windows, uncomment the line below and comment the line above:
+      # - C:\:/host:ro
+      
+      # Mount logs directory for persistent logging
+      - ./logs:/app/logs
+    networks:
+      - directory-app-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) }).on('error', () => process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Angular Frontend Service
+  directory-frontend:
+    build:
+      context: ./frontend/directory-listing-ui
+      dockerfile: Dockerfile
+    container_name: directory-listing-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - directory-api
+    networks:
+      - directory-app-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/", "||", "exit", "1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  # Development services (only start with --profile dev)
+  directory-api-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: directory-listing-api-dev
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - LOG_LEVEL=debug
+    volumes:
+      - ./src:/app/src
+      - ./logs:/app/logs
+      # For development, mount a specific directory instead of root
+      - ./test-directory:/host:ro
+    networks:
+      - directory-app-network
+    profiles:
+      - dev
+
+  directory-frontend-dev:
+    image: node:20-alpine
+    container_name: directory-listing-frontend-dev
+    working_dir: /app
+    command: sh -c "npm install && npm start -- --host 0.0.0.0"
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./frontend/directory-listing-ui:/app
+    networks:
+      - directory-app-network
+    profiles:
+      - dev
+
+networks:
+  directory-app-network:
+    driver: bridge
+
+volumes:
+  logs:
+    driver: local
