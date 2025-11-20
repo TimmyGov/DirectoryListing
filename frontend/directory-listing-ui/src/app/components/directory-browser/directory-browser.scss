@@ -1,0 +1,63 @@
+.directory-browser {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #f8f9fa;
+
+  .breadcrumb-container {
+    background: white;
+    border-bottom: 1px solid #dee2e6;
+    padding: 0.75rem 1rem;
+    min-height: 3rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .controls-panel {
+    background: white;
+    
+    .form-label {
+      font-weight: 500;
+      font-size: 0.875rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-select,
+    .form-control {
+      font-size: 0.875rem;
+    }
+  }
+
+  .directory-info {
+    background: #f8f9fa;
+    
+    .text-muted {
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+  }
+
+  .file-list-container {
+    flex: 1;
+    overflow: hidden;
+    background: white;
+  }
+
+  // Responsive design
+  @media (max-width: 768px) {
+    .controls-panel {
+      .row > .col-md-6 {
+        margin-bottom: 1rem;
+      }
+      
+      .row > .col-md-6:last-child .row {
+        flex-direction: column;
+        gap: 0.5rem;
+        
+        .col-auto {
+          flex: 1;
+        }
+      }
+    }
+  }
+}

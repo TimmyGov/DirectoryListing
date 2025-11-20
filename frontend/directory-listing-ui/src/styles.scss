@@ -1,0 +1,77 @@
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css');
+
+// Bootstrap customization
+:root {
+  --bs-primary: #1976d2;
+  --bs-secondary: #6c757d;
+  --bs-success: #28a745;
+  --bs-info: #17a2b8;
+  --bs-warning: #ffc107;
+  --bs-danger: #dc3545;
+  --bs-light: #f8f9fa;
+  --bs-dark: #343a40;
+}
+
+// Global styles
+html, body { 
+  height: 100%; 
+  margin: 0; 
+  font-family: 'Roboto', sans-serif;
+}
+
+.mat-typography {
+  font-family: 'Roboto', sans-serif;
+}
+
+// Custom styles for file browser
+.file-icon {
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.directory-icon {
+  color: #ffa726;
+}
+
+.file-icon-generic {
+  color: #90a4ae;
+}
+
+.hidden-file {
+  opacity: 0.6;
+  font-style: italic;
+}
+
+.file-size {
+  color: #666;
+  font-size: 0.85em;
+}
+
+.permissions {
+  font-family: 'Courier New', monospace;
+  font-size: 0.8em;
+  color: #555;
+}
+
+.breadcrumb {
+  background: #f5f5f5;
+  padding: 8px 16px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.breadcrumb-item {
+  cursor: pointer;
+  color: #1976d2;
+  
+  &:hover {
+    text-decoration: underline;
+  }
+  
+  &:not(:last-child)::after {
+    content: ' / ';
+    color: #666;
+  }
+}

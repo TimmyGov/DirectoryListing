@@ -1,0 +1,42 @@
+.breadcrumb-container {
+  background: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  padding: 1rem;
+  
+  .breadcrumb {
+    --bs-breadcrumb-divider: '/';
+    
+    .breadcrumb-item {
+      
+      a {
+        color: var(--bs-primary);
+        transition: color 0.15s ease-in-out;
+        
+        &:hover {
+          color: var(--bs-primary);
+          text-decoration: underline !important;
+        }
+      }
+      
+      &.active {
+        color: var(--bs-dark);
+      }
+      
+      .bi {
+        font-size: 0.9em;
+      }
+    }
+  }
+  
+  .btn-outline-primary {
+    --bs-btn-color: var(--bs-primary);
+    --bs-btn-border-color: var(--bs-primary);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--bs-primary);
+    --bs-btn-hover-border-color: var(--bs-primary);
+  }
+  
+  .font-monospace {
+    font-size: 0.875rem;
+  }
+}

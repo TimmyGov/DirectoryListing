@@ -1,0 +1,95 @@
+.file-list-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .table {
+    margin-bottom: 0;
+    
+    .sortable {
+      cursor: pointer;
+      user-select: none;
+      
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+      }
+      
+      .bi {
+        font-size: 0.8em;
+        opacity: 0.5;
+        transition: opacity 0.2s;
+      }
+      
+      &:hover .bi {
+        opacity: 1;
+      }
+    }
+
+    .file-row {
+      cursor: pointer;
+      
+      &:hover {
+        background-color: var(--bs-light) !important;
+      }
+      
+      &.directory-row {
+        .file-name {
+          font-weight: 600;
+          color: var(--bs-warning);
+        }
+      }
+      
+      &.hidden-file {
+        opacity: 0.6;
+        
+        .file-name {
+          font-style: italic;
+        }
+      }
+    }
+
+    .name-cell {
+      .file-name {
+        font-weight: 500;
+      }
+      
+      .bi {
+        font-size: 1.1em;
+      }
+    }
+  }
+
+  .pagination {
+    margin-bottom: 0;
+    
+    .page-link {
+      border-color: #dee2e6;
+      color: var(--bs-primary);
+      
+      &:hover {
+        background-color: var(--bs-light);
+        border-color: var(--bs-primary);
+      }
+    }
+    
+    .page-item.active .page-link {
+      background-color: var(--bs-primary);
+      border-color: var(--bs-primary);
+    }
+    
+    .page-item.disabled .page-link {
+      color: #6c757d;
+      background-color: #fff;
+      border-color: #dee2e6;
+    }
+  }
+}
+
+// Bootstrap Icons file type mapping
+.bi-file-earmark-text { color: #007bff; }
+.bi-file-earmark-image { color: #28a745; }
+.bi-file-earmark-music { color: #6f42c1; }
+.bi-file-earmark-play { color: #dc3545; }
+.bi-file-earmark-zip { color: #fd7e14; }
+.bi-file-earmark-code { color: #20c997; }
+.bi-folder-fill { color: #ffc107; }

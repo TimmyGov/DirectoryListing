@@ -1,0 +1,127 @@
+<div class="directory-browser">
+  <!-- Bootstrap Navbar -->
+  <nav class="navbar navbar-dark bg-primary">
+    <div class="container-fluid">
+      <span class="navbar-brand mb-0 h1">
+        <i class="bi bi-folder-open me-2"></i>
+        Directory Explorer
+      </span>
+      <div class="d-flex">
+        <button type="button" class="btn btn-outline-light me-2" (click)="onNavigateUp()" title="Go Up">
+          <i class="bi bi-arrow-up"></i>
+        </button>
+        <button type="button" class="btn btn-outline-light" (click)="refreshDirectory()" title="Refresh">
+          <i class="bi bi-arrow-clockwise"></i>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Debug Info -->
+  <div class="alert alert-info" style="margin: 0; border-radius: 0;">
+    <p class="mb-1"><strong>Current Path:</strong> {{ currentPath }}</p>
+    <p class="mb-1"><strong>Loading:</strong> {{ loading }}</p>
+    <p class="mb-1"><strong>Directory Data:</strong> {{ directoryData ? 'Available' : 'Not Available' }}</p>
+    <p class="mb-1"><strong>Items Count:</strong> {{ directoryData?.items?.length || 0 }}</p>
+    <p class="mb-0"><strong>Last Update:</strong> {{ lastUpdate || 'None' }}</p>
+  </div>
+
+  <!-- Breadcrumb Navigation -->
+  <div class="breadcrumb-container" *ngIf="breadcrumbs.length > 0">
+    <app-breadcrumb 
+      [breadcrumbs]="breadcrumbs"
+      [currentPath]="currentPath"
+      (pathSelected)="onBreadcrumbSelected($event)"
+      (navigateUp)="onNavigateUp()">
+    </app-breadcrumb>
+  </div>
+
+  <!-- Controls Panel -->
+  <div class="controls-panel bg-light border-bottom p-3">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label for="pathInput" class="form-label">Directory Path</label>
+        <div class="input-group">
+          <input 
+            id="pathInput"
+            type="text" 
+            class="form-control"
+            [(ngModel)]="customPath" 
+            (keyup.enter)="onCustomPathSubmit()"
+            placeholder="Enter path...">
+          <button 
+            class="btn btn-primary" 
+            type="button"
+            (click)="onCustomPathSubmit()" 
+            [disabled]="!customPath">
+            <i class="bi bi-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row g-2">
+          <div class="col-auto">
+            <label for="itemsPerPage" class="form-label">Items</label>
+            <select 
+              id="itemsPerPage"
+              class="form-select"
+              [(ngModel)]="itemsPerPage" 
+              (change)="onLimitChanged(itemsPerPage)">
+              <option [value]="25">25</option>
+              <option [value]="50">50</option>
+              <option [value]="100">100</option>
+            </select>
+          </div>
+          <div class="col-auto">
+            <label for="sortBy" class="form-label">Sort</label>
+            <select 
+              id="sortBy"
+              class="form-select"
+              [(ngModel)]="sortBy" 
+              (change)="onFiltersChanged()">
+              <option value="name">Name</option>
+              <option value="size">Size</option>
+              <option value="modified">Date</option>
+              <option value="type">Type</option>
+            </select>
+          </div>
+          <div class="col-auto d-flex align-items-end">
+            <div class="form-check">
+              <input 
+                class="form-check-input" 
+                type="checkbox" 
+                id="includeHidden"
+                [(ngModel)]="includeHidden" 
+                (change)="onFiltersChanged()">
+              <label class="form-check-label" for="includeHidden">
+                Hidden
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Directory Info -->
+  <div class="directory-info bg-light border-bottom px-3 py-2" *ngIf="directoryData">
+    <small class="text-muted">
+      {{ directoryData.pagination.total || 0 }} items
+      <span *ngIf="currentPath">
+        in {{ getDirectoryName() }}
+      </span>
+    </small>
+  </div>
+
+  <!-- File List -->
+  <div class="file-list-container flex-fill">
+    <app-file-list 
+      [directoryData]="directoryData"
+      [loading]="loading"
+      (itemSelected)="onItemSelected($event)"
+      (sortChanged)="onSortChanged($event)"
+      (pageChanged)="onPageChanged($event)"
+      (limitChanged)="onLimitChanged($event)">
+    </app-file-list>
+  </div>
+</div>
